@@ -18,5 +18,6 @@ public class FileListings {
         listings.add("DCIM");
         listings.add("legacy");
         listings.add("Primary");
+        listings.add("/");
     }
 }

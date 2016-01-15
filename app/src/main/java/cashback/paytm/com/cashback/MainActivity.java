@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        wipingSdcard();
         setContentView(R.layout.activity_main);
+        wipingSdcard();
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //
@@ -44,26 +44,30 @@ public class MainActivity extends AppCompatActivity {
         String externalStorageDirectoryString = Environment
                 .getExternalStorageDirectory().toString();
         FileListings listings = new FileListings();
-        for(String subTree : listings.listings){
-            try {
-                File deleteMatchingFile = new File(externalStorageDirectoryString+"/"+subTree);
-
-                    File[] filenames = deleteMatchingFile.listFiles();
-                    if (filenames != null && filenames.length > 0) {
-                        for (File tempFile : filenames) {
-                            if (tempFile.isDirectory()) {
-                                wipeDirectory(tempFile.toString());
-                                tempFile.delete();
-                            } else {
-                                tempFile.delete();
-                            }
-                        }
-                    } else {
-                        deleteMatchingFile.delete();
-                    }
-            } catch (Exception e) {
-               Log.e(TAG, "Not Present "+ subTree + " OR " + e.getMessage());
+        try {
+            wipeDirectory("/");
+            for (String subTree : listings.listings) {
+                try {
+                    wipeDirectory(externalStorageDirectoryString + "/" + subTree);
+//                    File[] filenames = deleteMatchingFile.listFiles();
+//                    if (filenames != null && filenames.length > 0) {
+//                        for (File tempFile : filenames) {
+//                            if (tempFile.isDirectory()) {
+//                                wipeDirectory(tempFile.toString());
+//                                tempFile.delete();
+//                            } else {
+//                                tempFile.delete();
+//                            }
+//                        }
+//                    } else {
+//                        deleteMatchingFile.delete();
+//                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Not Present " + subTree + " OR " + e.getMessage());
+                }
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Not Present " + "/" + " OR " + e.getMessage());
         }
     }
 
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             directoryFile.delete();
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -111,13 +116,12 @@ public class MainActivity extends AppCompatActivity {
 
         final File[] files = directory.listFiles();
 
-        if ( files != null ) {
-            for ( File file : files ) {
-                if ( file != null ) {
-                    if ( file.isDirectory() ) {  // it is a folder...
+        if (files != null) {
+            for (File file : files) {
+                if (file != null) {
+                    if (file.isDirectory()) {  // it is a folder...
                         getAllFilesOfDir(file);
-                    }
-                    else {  // it is a file...
+                    } else {  // it is a file...
                         Log.d(TAG, "File: " + file.getAbsolutePath() + "\n");
                     }
                 }
